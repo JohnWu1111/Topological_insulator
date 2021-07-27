@@ -5,7 +5,7 @@
 tic;
 Lx = 200;
 Ly = 200;
-m = 1;
+m = 0;
 % J = 1;
 
 k = -pi+2*pi/Lx:2*pi/Lx:pi;
@@ -36,5 +36,7 @@ for ki = 1:length(k)
 end
 xlabel('kx')
 ylabel('\epsilon_k')
+str = strcat('m = ', num2str(m));
+title(str)
 
 toc;
