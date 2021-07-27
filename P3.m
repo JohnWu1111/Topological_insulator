@@ -5,7 +5,11 @@
 tic;
 Lx = 200;
 Ly = 200;
-m = 0;
+m = -1;
+sigma_x = [0 1; 1 0];
+sigma_y = [0 -1i; 1i 0];
+sigma_z = [1 0; 0 -1];
+
 % J = 1;
 
 k = -pi+2*pi/Lx:2*pi/Lx:pi;
