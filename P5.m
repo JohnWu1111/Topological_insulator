@@ -2,6 +2,7 @@
 % finite size for x-direction, square lattice, after inversal Fourier transform for
 % x-axis. Calculate the probability current of the edge state.
 
+clear;
 tic;
 Lx = 100;
 Ly = 100;
@@ -15,14 +16,14 @@ sigma_z = [1 0; 0 -1];
 k = -pi+2*pi/Ly:2*pi/Ly:pi;
 % k = 0:2*pi/Lx:2*pi-2*pi/Lx;
 
-phi_u = zeros(Ly,Ly);
-phi_d = zeros(Ly,Ly);
-    
-phi_u_k = zeros(Ly,Ly);
-phi_d_k = zeros(Ly,Ly);
+% phi_u = zeros(Ly,Ly);
+% phi_d = zeros(Ly,Ly);
+%     
+% phi_u_k = zeros(Ly,Ly);
+% phi_d_k = zeros(Ly,Ly);
 
-phi_m_k = zeros(Lx,Ly);
-phi_m = zeros(Lx,Ly);
+phi_m_k1 = zeros(Lx,Ly);
+phi_m_k2 = zeros(Lx,Ly);
 
 for ki = 1:length(k)
     H1 = zeros(Lx,Lx); % for sigma_x
@@ -52,33 +53,54 @@ for ki = 1:length(k)
     x = k(ki).*(zeros(Lx*2,1)+1);
     
     for j = 1:Lx       
-%         phi_m_k(:,ki) = phi_m_k(:,ki) + phi(1:Lx,j);
-        phi_m_k(:,ki) = phi_m_k(:,ki) + phi(Lx+1:end,j);
+        phi_m_k1(:,ki) = phi_m_k1(:,ki) + phi(1:Lx,j);
+        phi_m_k2(:,ki) = phi_m_k2(:,ki) + phi(Lx+1:end,j);
     end
     
 %     plot(x,diag(e),'.','color','k')
 %     hold on
 end
 
-for i = 1:Lx
+Jx1 = zeros(Lx,Ly);
+Jy1 = zeros(Lx,Ly);
+phi_m_c1 = conj(phi_m_k1);
+Jx2 = zeros(Lx,Ly);
+Jy2 = zeros(Lx,Ly);
+phi_m_c2 = conj(phi_m_k2);
+
+for i = 1:Lx-1
     for j = 1:Ly
-        for ki = 1:Ly
-            phi_m(i,j) = phi_m(i,j) + phi_m_k(i,ki)*exp(1i*j*k(ki))/sqrt(Ly);
-        end
+        Jx1(i,j) = 1i*(phi_m_c1(i,j)*phi_m_k1(i+1,j) - phi_m_c1(i+1,j)*phi_m_k1(i,j));
+        Jy1(i,j) = 2*sin(k(j))*phi_m_k1(i,j)*phi_m_c1(i,j);
+        Jx2(i,j) = 1i*(phi_m_c2(i,j)*phi_m_k2(i+1,j) - phi_m_c2(i+1,j)*phi_m_k2(i,j));
+        Jy2(i,j) = 2*sin(k(j))*phi_m_k2(i,j)*phi_m_c2(i,j);
     end
 end
 
-phi_m_c = conj(phi_m);
-J_l = zeros(1,Ly);
-J_r = zeros(1,Ly);
-for i = 2:Ly-1
-    J_l(i) = -1i*(phi_m_c(1,i)*(phi_m(1,i+1)-phi_m(1,i-1))/2 - phi_m(1,i)*(phi_m_c(1,i+1)-phi_m_c(1,i-1))/2);
-    J_r(i) = -1i*(phi_m_c(end,i)*(phi_m(end,i+1)-phi_m(end,i-1))/2 - phi_m(end,i)*(phi_m_c(end,i+1)-phi_m_c(end,i-1))/2);
-end
-y = 2:Ly-1;
-plot(y,J_l(2:Ly-1));
-hold on
-plot(y,J_r(2:Ly-1));
+figure;
+quiver(Jx1,Jy1)
+figure;
+quiver(Jx2,Jy2)
+
+% for i = 1:Lx
+%     for j = 1:Ly
+%         for ki = 1:Ly
+%             phi_m(i,j) = phi_m(i,j) + phi_m_k(i,ki)*exp(1i*j*k(ki))/sqrt(Ly);
+%         end
+%     end
+% end
+% 
+% phi_m_c = conj(phi_m);
+% J_l = zeros(1,Ly);
+% J_r = zeros(1,Ly);
+% for i = 2:Ly-1
+%     J_l(i) = -1i*(phi_m_c(1,i)*(phi_m(1,i+1)-phi_m(1,i-1))/2 - phi_m(1,i)*(phi_m_c(1,i+1)-phi_m_c(1,i-1))/2);
+%     J_r(i) = -1i*(phi_m_c(end,i)*(phi_m(end,i+1)-phi_m(end,i-1))/2 - phi_m(end,i)*(phi_m_c(end,i+1)-phi_m_c(end,i-1))/2);
+% end
+% y = 2:Ly-1;
+% plot(y,J_l(2:Ly-1));
+% hold on
+% plot(y,J_r(2:Ly-1));
 
 % xlabel('kx')
 % ylabel('\epsilon_k')
