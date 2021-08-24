@@ -40,7 +40,7 @@ for ki = 1:length(k)
 %     H = 3*(kron(H1,sigma_x) - kron(H2,sigma_y) + kron(H3,sigma_z));
     
     e = eig(H);
-    x = k(ki).*(zeros(Ly*2,1)+1);
+    x = k(ki).*(zeros(Lx*2,1)+1);
     plot(x,e,'.','color','k')
     hold on
 end
