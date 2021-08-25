@@ -70,37 +70,36 @@ H = 3*(kron(H1,sigma_x) - kron(H2,sigma_y) + kron(H3,sigma_z)) + kron(H4,eye(2))
 
 [phi,e] = eig(H);
 
-phi_l1 = zeros(Ly,1);
-phi_l2 = zeros(Ly,1);
-phi_r1 = zeros(Ly,1);
-phi_r2 = zeros(Ly,1);
-
+phi_xy1 = zeros(Lx,Ly);
+phi_xy2 = zeros(Lx,Ly);
+Jx1 = zeros(Lx,Ly);
+Jx2 = zeros(Lx,Ly);
+Jy1 = zeros(Lx,Ly);
+Jy2 = zeros(Lx,Ly);
 for t = 1:Lx*Ly
-    phi_l1 = phi_l1 + phi(1:Ly,t);
-    phi_l2 = phi_l2 + phi(((Lx-1)*Ly+1):Lx*Ly,t);
-    phi_r1 = phi_r1 + phi((Lx*Ly+1):((Lx+1)*Ly),t);
-    phi_r2 = phi_r2 + phi(((2*Lx-1)*Ly+1):2*Lx*Ly,t);
+    for i = 1:Lx
+        for j = 1:Ly
+            phi_xy1(i,j) = phi((i-1)*Lx+Ly,t);
+            phi_xy2(i,j) = phi(Lx*Ly+(i-1)*Lx+Ly,t);
+        end
+    end
+    
+    phi_xy1c = conj(phi_xy1);
+    phi_xy2c = conj(phi_xy2);
+    
+    for i = 1:Lx-1
+        for j = 1:Ly
+            Jx1(i,j) = Jx1(i,j)-1i*(phi_xy1c(i,j)*phi_xy1(i+1,j) - phi_xy1(i,j)*phi_xy1c(i+1,j));
+            Jx2(i,j) = Jx2(i,j)-1i*(phi_xy2c(i,j)*phi_xy2(i+1,j) - phi_xy2(i,j)*phi_xy2c(i+1,j));
+        end
+    end
+    
+    for i = 1:Lx
+        for j = 1:Ly-1
+            Jy1(i,j) = Jy1(i,j)-1i*(phi_xy1c(i,j+1)*phi_xy1(i,j) - phi_xy1(i,j)*phi_xy1c(i,j+1));
+            Jy2(i,j) = Jy2(i,j)-1i*(phi_xy2c(i,j+1)*phi_xy2(i,j) - phi_xy2(i,j)*phi_xy2c(i,j+1));
+        end
+    end
 end
-
-phi_l1c = conj(phi_l1);
-phi_l2c = conj(phi_l2);
-phi_r1c = conj(phi_r1);
-phi_r2c = conj(phi_r2);
-
-J_l1 = zeros(1,Ly);
-J_r1 = zeros(1,Ly);
-J_l2 = zeros(1,Ly);
-J_r2 = zeros(1,Ly);
-
-for i = 1:Ly-1
-    J_l1(i) = -1i*(phi_l1c(i)*phi_l1(i+1) - phi_l1(i)*phi_l1c(i+1));
-    J_r1(i) = -1i*(phi_r1c(i)*phi_r1(i+1) - phi_r1(i)*phi_r1c(i+1));
-    J_l2(i) = -1i*(phi_l2c(i)*phi_l2(i+1) - phi_l2(i)*phi_l2c(i+1));
-    J_r2(i) = -1i*(phi_r2c(i)*phi_r2(i+1) - phi_r2(i)*phi_r2c(i+1));
-end
-y = 1:Ly-1;
-plot(y,J_l1(1:Ly-1));
-hold on
-plot(y,J_r1(1:Ly-1));
 
 toc;

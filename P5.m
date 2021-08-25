@@ -13,7 +13,6 @@ sigma_z = [1 0; 0 -1];
 
 % J = 1;
 
-k = -pi+2*pi/Ly:2*pi/Ly:pi;
 % k = 0:2*pi/Lx:2*pi-2*pi/Lx;
 
 % phi_u = zeros(Ly,Ly);
@@ -22,8 +21,15 @@ k = -pi+2*pi/Ly:2*pi/Ly:pi;
 % phi_u_k = zeros(Ly,Ly);
 % phi_d_k = zeros(Ly,Ly);
 
-phi_m_k1 = zeros(Lx,Ly);
-phi_m_k2 = zeros(Lx,Ly);
+% phi_m_k1 = zeros(Lx,Ly);
+% phi_m_k2 = zeros(Lx,Ly);
+
+Jx1 = zeros(Lx,Ly);
+Jy1 = zeros(Lx,Ly);
+Jx2 = zeros(Lx,Ly);
+Jy2 = zeros(Lx,Ly);
+
+k = -pi+2*pi/Ly:2*pi/Ly:pi;
 
 for ki = 1:length(k)
     H1 = zeros(Lx,Lx); % for sigma_x
@@ -52,30 +58,18 @@ for ki = 1:length(k)
     [phi,e] = eig(H);
     x = k(ki).*(zeros(Lx*2,1)+1);
     
-    for j = 1:Lx       
-        phi_m_k1(:,ki) = phi_m_k1(:,ki) + phi(1:Lx,j);
-        phi_m_k2(:,ki) = phi_m_k2(:,ki) + phi(Lx+1:end,j);
+    phi_k1 = phi(1:Lx,1:Lx);
+    phi_k2 = phi(Lx+1:end,1:Lx);
+    
+    for i = 1:Lx
+        Jy1(i,ki) = Jy1(i,ki) + 2*sin(k(ki))*phi_k1(i,ki)*phi_k1(i,ki);
+        Jy2(i,ki) = Jy2(i,ki) + 2*sin(k(ki))*phi_k2(i,ki)*phi_k2(i,ki);
     end
     
 %     plot(x,diag(e),'.','color','k')
 %     hold on
 end
 
-Jx1 = zeros(Lx,Ly);
-Jy1 = zeros(Lx,Ly);
-phi_m_c1 = conj(phi_m_k1);
-Jx2 = zeros(Lx,Ly);
-Jy2 = zeros(Lx,Ly);
-phi_m_c2 = conj(phi_m_k2);
-
-for i = 1:Lx-1
-    for j = 1:Ly
-        Jx1(i,j) = 1i*(phi_m_c1(i,j)*phi_m_k1(i+1,j) - phi_m_c1(i+1,j)*phi_m_k1(i,j));
-        Jy1(i,j) = 2*sin(k(j))*phi_m_k1(i,j)*phi_m_c1(i,j);
-        Jx2(i,j) = 1i*(phi_m_c2(i,j)*phi_m_k2(i+1,j) - phi_m_c2(i+1,j)*phi_m_k2(i,j));
-        Jy2(i,j) = 2*sin(k(j))*phi_m_k2(i,j)*phi_m_c2(i,j);
-    end
-end
 
 figure;
 quiver(Jx1,Jy1)
