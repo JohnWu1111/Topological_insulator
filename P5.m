@@ -52,7 +52,7 @@ for ki = 1:length(k)
     H3(Lx,Lx) = m - cos(k(ki));
     H4(Lx,Lx) = -2*cos(k(ki));
     
-    H = 3*(kron(H1,sigma_x) - kron(H2,sigma_y) + kron(H3,sigma_z)) + kron(H4,eye(2));
+    H = 3*(kron(sigma_x,H1) - kron(sigma_y,H2) + kron(sigma_z,H3)) + kron(eye(2),H4);
 %     H = 3*(kron(H1,sigma_x) - kron(H2,sigma_y) + kron(H3,sigma_z));
     
     [phi,e] = eig(H);
@@ -75,6 +75,8 @@ figure;
 quiver(Jx1,Jy1)
 figure;
 quiver(Jx2,Jy2)
+
+Jy = Jy1+Jy2;
 
 % for i = 1:Lx
 %     for j = 1:Ly
