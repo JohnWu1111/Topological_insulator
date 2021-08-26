@@ -90,6 +90,8 @@ Jy2 = zeros(Lx,Ly);
 for t = 1:L
     for i = 1:Lx
         for j = 1:Ly
+            a = (i-1)*Lx+j;
+            b = Lx*Ly+(i-1)*Lx+j;
             phi_xy1(i,j) = phi((i-1)*Lx+j,t);
             phi_xy2(i,j) = phi(Lx*Ly+(i-1)*Lx+j,t);
         end
@@ -113,14 +115,21 @@ for t = 1:L
     end
 end
 
-figure;
-quiver(Jx1',zeros(Lx,Ly))
-hold on
-quiver(zeros(Lx,Ly),Jy1')
+Jx = Jx1 + Jx2;
+Jy = Jy1 + Jy2;
 
 figure;
-quiver(Jx2',zeros(Lx,Ly))
+quiver(30*Jx1',zeros(Lx,Ly),0)
 hold on
-quiver(zeros(Lx,Ly),Jy2')
+quiver(zeros(Lx,Ly),30*Jy1',0)
 
+figure;
+quiver(30*Jx2',zeros(Lx,Ly),0)
+hold on
+quiver(zeros(Lx,Ly),30*Jy2',0)
+
+% figure;
+% quiver(Jx1'+Jx2',zeros(Lx,Ly))
+% hold on
+% quiver(zeros(Lx,Ly),Jy1'+Jy2')
 toc;

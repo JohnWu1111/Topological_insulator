@@ -4,8 +4,8 @@
 
 clear;
 tic;
-Lx = 100;
-Ly = 100;
+Lx = 40;
+Ly = 40;
 m = 1.5;
 sigma_x = [0 1; 1 0];
 sigma_y = [0 -1i; 1i 0];
@@ -72,9 +72,9 @@ end
 
 
 figure;
-quiver(Jx1,Jy1)
+quiver(Jx1',Jy1')
 figure;
-quiver(Jx2,Jy2)
+quiver(Jx2',Jy2')
 
 Jy = Jy1+Jy2;
 
